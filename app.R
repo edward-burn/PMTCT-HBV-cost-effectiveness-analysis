@@ -54,7 +54,7 @@ tabPanel("Strategies",
 tabPanel("Model structure",
 	 mainPanel(
 		   #tags$img(src="decision_tree.png")
-		 htmlOutput("picture")   
+		 htmlOutput("picture", inline=T)   
 	         )
 	                 ))),     
 
@@ -277,9 +277,9 @@ tabPanel("Contact",
 
 #### SERVER ------
 server <-	function(input, output, session) {
-
+src="model outline.png"
 #src ="https://github.com/edward-burn/econ-eval-hep-b/blob/master/images/decision_tree.png"
-src ="https://github.com/edward-burn/PMTCT-HBV-cost-effectiveness-analysis/blob/master/model%20outline.png"
+#src ="https://github.com/edward-burn/PMTCT-HBV-cost-effectiveness-analysis/blob/master/model%20outline.png"
 #src = "https://theWeb/aPictureSomewhere.jpg"
 output$picture<-renderText({c('<img src="',src,'">')})
   
