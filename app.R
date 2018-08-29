@@ -28,23 +28,34 @@ tabPanel("Introduction",
 # backgound tab ------  	         
 tabPanel("Background",
 	  mainPanel(
-	    tags$h2("heading"),
-	      tags$h3("intro, link to paper, etc"),
-	    tags$h4("more text")
+	      tags$h3("Introduction"),
+	    	tags$h4("This RShiny app presents an
+	    	        decision-analytic model for
+                assessing the cost-effectiveness 
+	    	        of three possible 
+                HBV PMTCT approaches 
+	    	        in pregnancy"),
+	    	tags$h4("The app is based on the following paper:"),
+	    	tags$h4(tags$strong("Cost-effectiveness of alternative strategies for prevention of
+                 mother to child transmission of HBV in South Africa"),
+	    	        "Jolynne Mokaya, Edward Burn, Cynthia Raissa Tamandjou, Dominique Goedhals,
+                 Monique Andersson, Rafael Pinedo-Villanueva, 
+	    	        Philippa C Matthews. (In review at BMJ Global Health)")
+	    	
 	                 )
-	                 ), 
+	                 ),
 # strategies tab ------  	
 tabPanel("Strategies",
 	  mainPanel(
-	       tags$h3("S1: Current practice"),
+	       tags$h3("Strategy 1 (S1): Current practice"),
 	       tags$h4("No pregnant woman is screened for HBsAg and 
 	                therefore no HBV treatment is given perinatallyed."),
-	       tags$h3("S2: Antiviral prophylaxis for all women who 
+	       tags$h3("Strategy 2 (S2): Antiviral prophylaxis for all women who 
 	                test HBsAg positive"),
 	       tags$h4("Pregnant women are screened for HBsAg; 
 	                those who test positive are treated with TDF 
 	                from 28 weeks' gestation to 4 weeks post-partumdelivery."), 
-	       tags$h3("S3: Antiviral prophylaxis of women 
+	       tags$h3("Strategy 3 (S3): Antiviral prophylaxis of women 
 	                who are HBsAg positive and HBeAg positive"),
          tags$h4("Pregnant women are screened for HBsAg, those who test positive are screened for HBeAg. Only those who are HBeAg positive are treated with TDF from 28 weeks' 
 	                gestation to 4 weeks post-partumdelivery."
@@ -243,38 +254,39 @@ tabPanel("Cost-effectiveness
   mainPanel("",
             plotOutput("ceac")
                     )))
-    	)),
+    	))))#,
+
 # notes ----
-tabPanel("Other",
-     tabsetPanel(type = "tabs",    
-# citation -----
-tabPanel("Citation",
-  mainPanel(  
-    tags$h3("To cite estimates from this calculator"),
-    tags$h3("...."),
-    tags$h3("To cite the paper upon which 
-             the tool is based"),
-    tags$h3("...."))),
-# Acknowledgements -----
-tabPanel("Acknowledgements",
-        tags$h3("....")
-         ),
-# Disclaimer -----
-tabPanel("Disclaimer",
-         tags$h3("....")
-         ),
-# Contact -----
-tabPanel("Contact",
-   tags$h3("For any questions, 
-            bug reports or 
-            suggestions relating to this 
-            tool please email 
-            edward.burn@ndorms.ox.ac.uk")) 
-         )
-         )
-))
-
-
+# tabPanel("Other",
+#      tabsetPanel(type = "tabs",    
+# # citation -----
+# # tabPanel("Citation",
+# #   mainPanel(  
+# #     tags$h3("To cite estimates from this calculator"),
+# #     tags$h3("...."),
+# #     tags$h3("To cite the paper upon which 
+# #              the tool is based"),
+# #     tags$h3("...."))),
+# # Acknowledgements -----
+# tabPanel("Acknowledgements",
+#         tags$h3("....")
+#          ),
+# # Disclaimer -----
+# tabPanel("Disclaimer",
+#          tags$h3("....")
+#          ),
+# # Contact -----
+# tabPanel("Contact",
+#    tags$h3("For any questions, 
+#             bug reports or 
+#             suggestions relating to this 
+#             tool please email 
+#             edward.burn@ndorms.ox.ac.uk")) 
+#          )
+#          )
+# ))
+# 
+# 
 #### SERVER ------
 server <-	function(input, output, session) {
 src="model outline.png"
