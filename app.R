@@ -40,7 +40,7 @@ tabPanel("Background",
                  mother to child transmission of HBV in South Africa"),
 	    	        "Jolynne Mokaya, Edward Burn, Cynthia Raissa Tamandjou, Dominique Goedhals,
                  Monique Andersson, Rafael Pinedo-Villanueva, 
-	    	        Philippa C Matthews. (In review at BMJ Global Health)")
+	    	        Philippa C Matthews. (Currently at submission stage)")
 	    	
 	                 )
 	                 ),
