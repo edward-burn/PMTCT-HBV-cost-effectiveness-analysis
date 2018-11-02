@@ -40,7 +40,7 @@ tabPanel("Background",
                  mother to child transmission of HBV in South Africa"),
 	    	        "Jolynne Mokaya, Edward Burn, Cynthia Raissa Tamandjou, Dominique Goedhals,
                  Monique Andersson, Rafael Pinedo-Villanueva, 
-	    	        Philippa C Matthews. (In review at BMJ Global Health)")
+	    	        Philippa C Matthews. (Currently at submission stage)")
 	    	
 	                 )
 	                 ),
@@ -172,7 +172,27 @@ tabPanel("P4",
   tags$hr(tags$h5("With treatment"),
   tags$h5("*Assumed to be 
          		equal to P3 with treatment")
-         ))
+         )),
+# adherence ----
+tabPanel("Treatment adherence",
+	tags$h4("Proportion of those treated expected to adhere
+	        to treatment"),
+numericInput('adh.mean', 
+		           'Mean', 
+		           value=0.735, step=0.1,
+               min = 0, max = 1),
+	numericInput('adh.low', 
+		           'Lower limit', 
+		           value=0.693,step=0.1,
+               min = 0, max = 1),
+	numericInput('adh.high', 
+		           'Upper limit', 
+		            value=0.775,step=0.1,
+                min = 0, max = 1),
+  tags$h5("Mothers that don't adhere to treatment are
+           assumed to have the same probabilities of 
+          transmission as if untreated, while incurring 
+          the full cost of treatment."))
 		     )),
 		
 		
@@ -322,6 +342,10 @@ reactive({
                           input$s2.p3.prob.low,
                           input$s2.p3.prob.high,
                           input$s2.p3)
+  adh.prob<-rtriangle(n.sims, 
+                          input$adh.low,
+                          input$adh.high,
+                          input$adh.mean)
                           
   
   # list of probabilities
@@ -335,11 +359,17 @@ reactive({
        s1.p3=input$s1.p3,
        s1.p4=input$s1.p4,
        # s2 probs
-       s2.p3=input$s2.p3,
-       s2.p4=input$s2.p3,
+       #s2.p3=input$s2.p3,   
+       s2.p3=(input$s2.p3*input$adh.mean)+
+         ((1-input$adh.mean)*input$s1.p3),   # with adherence
+      # s2.p4=input$s2.p3,
+       s2.p4=(input$s2.p3*input$adh.mean)+
+         ((1-input$adh.mean)*input$s1.p4), # with adherence
        # s3 probs
-       s3.p3= input$s2.p3,# same as prob s2.p3
-       s3.p4= input$s1.p4,# same as prob s1.p4
+      # s3.p3= input$s2.p3,# same as prob s2.p3
+       s3.p3=(input$s2.p3*input$adh.mean)+
+         ((1-input$adh.mean)*input$s1.p3),   # with adherence
+      s3.p4= input$s1.p4,# same as prob s1.p4
        ## probabilistic
        #common probs
        p1.prob=p1.prob,
@@ -348,8 +378,12 @@ reactive({
        s1.p3.prob=s1.p3.prob,
        s1.p4.prob=s1.p4.prob,
        # s2 probs
-       s2.p3.prob=s2.p3.prob,
-       s2.p4.prob=s2.p3.prob, # same as prob s2.p3
+      # s2.p3.prob=s2.p3.prob,
+      s2.p3.prob=(s2.p3.prob*input$adh.mean)+
+         ((1-input$adh.mean)*s1.p3.prob),   # with adherence
+      # s2.p4.prob=s2.p3.prob, # same as prob s2.p3
+      s2.p4.prob=(s2.p3.prob*input$adh.mean)+
+          ((1-input$adh.mean)*s1.p4.prob),   # with adherence  
        # s3 probs
        s3.p3.prob= s2.p3.prob,# same as prob s2.p3
        s3.p4.prob= s1.p4.prob # same as prob s1.p4
