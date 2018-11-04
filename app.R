@@ -103,7 +103,7 @@ tabPanel("Current practice",
 		            'Upper limit', 
 		             value=0.074,step=0.1,
                  min = 0, max = 1)),
-# p2 -----		          
+# p2 		          
 	 tags$hr(tags$h4("P2: Mother who is HBsAg+ being HBeAg+"), 
 	 numericInput('p2', 
 		            'Mean', 
@@ -117,7 +117,7 @@ tabPanel("Current practice",
 		           'Upper limit', 
 		            value=0.429,step=0.1,
                  min = 0, max = 1)),
-# p3 -----		         
+# p3 		         
 	 tags$hr(tags$h4("P3: Mother who is HBsAg+ and HBeAg+ having child who is HBsAg+"), 
 	 numericInput('p3', 
 		            'Mean', 
