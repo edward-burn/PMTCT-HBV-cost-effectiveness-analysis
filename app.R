@@ -87,9 +87,9 @@ tabPanel("Study cohort",
 # probabilities tab ------ 
 tabPanel("Probabilities",
 		      tabsetPanel(type = "tabs",
-# p1 -----
-tabPanel("P1",   
-	 tags$h4("Probability of 
+tabPanel("Current practice",   
+# p1 
+	 tags$hr(tags$h4("P1: Probability of 
             mother being HBsAg+"), 
 	 numericInput('p1', 
 		            'Mean', 
@@ -102,12 +102,9 @@ tabPanel("P1",
 	 numericInput('p1.prob.high', 
 		            'Upper limit', 
 		             value=0.074,step=0.1,
-                 min = 0, max = 1)
-),
-
+                 min = 0, max = 1)),
 # p2 -----		          
-tabPanel("P2",   
-	 tags$h4("Mother who is HBsAg+ being HBeAg+"), 
+	 tags$hr(tags$h4("P2: Mother who is HBsAg+ being HBeAg+"), 
 	 numericInput('p2', 
 		            'Mean', 
 		            value=0.23,step=0.1,
@@ -119,64 +116,54 @@ tabPanel("P2",
 	numericInput('p2.prob.high', 
 		           'Upper limit', 
 		            value=0.429,step=0.1,
-                 min = 0, max = 1)
-		         ),
-		         
+                 min = 0, max = 1)),
 # p3 -----		         
-tabPanel("P3",
-	 tags$h4("Mother who is HBsAg+ and HBeAg+ having child who is HBsAg+"), 
-	 tags$h5("Without treatment"),
-	 numericInput('s1.p3', 
+	 tags$hr(tags$h4("P3: Mother who is HBsAg+ and HBeAg+ having child who is HBsAg+"), 
+	 numericInput('p3', 
 		            'Mean', 
 		             value=0.383,step=0.1,
                  min = 0, max = 1),
-	 numericInput('s1.p3.prob.low', 
+	 numericInput('p3.prob.low', 
 		            'Lower limit', 
 		             value=0.07,step=0.1,
                  min = 0, max = 1),
-	 numericInput('s1.p3.prob.high', 
+	 numericInput('p3.prob.high', 
 		            'Upper limit', 
 		             value=0.744,step=0.1,
-                 min = 0, max = 1),
-	tags$hr(tags$h5("With treatment"),
-	numericInput('s2.p3', 
-		           'Mean', 
-		            value=0.029,step=0.01,
-                 min = 0, max = 1),
-	numericInput('s2.p3.prob.low', 
-		           'Lower limit', 
-		            value=0,step=0.01,
-                 min = 0, max = 1),
-	numericInput('s2.p3.prob.high', 
-		           'Upper limit', 
-		            value=0.052,step=0.01,
-                 min = 0, max = 1))
-		          ),
-# p4 ----
-tabPanel("P4",
-	tags$h4("Mother who is HBsAg+ and HBeAg- 
+                 min = 0, max = 1)),
+	tags$hr(tags$h4("P4: Mother who is HBsAg+ and HBeAg- 
 	         having child who is HBsAg+"), 
-	tags$h5("Without treatment"),
-  numericInput('s1.p4', 
+  numericInput('p4', 
 		           'Mean', 
 		           value=0.048, step=0.1,
                min = 0, max = 1),
-	numericInput('s1.p4.prob.low', 
+	numericInput('p4.prob.low', 
 		           'Lower limit', 
 		           value=0,step=0.1,
                min = 0, max = 1),
-	numericInput('s1.p4.prob.high', 
+	numericInput('p4.prob.high', 
 		           'Upper limit', 
 		            value=0.142,step=0.1,
-                min = 0, max = 1),
-  tags$hr(tags$h5("With treatment"),
-  tags$h5("*Assumed to be 
-         		equal to P3 with treatment")
-         )),
-# adherence ----
-tabPanel("Treatment adherence",
-	tags$h4("Proportion of those treated expected to adhere
-	        to treatment"),
+                min = 0, max = 1))#,
+	 ),
+# treatment ----
+tabPanel("Treatment effectiveness",
+# efficacy
+tags$hr(tags$h4("Treatment efficacy (relative risk reduction)"),
+numericInput('tr.efficacy.mean', 
+		           'Mean', 
+		           value=0.71, step=0.1,
+               min = 0, max = 1),
+	numericInput('tr.efficacy.low', 
+		           'Lower limit', 
+		           value=0.26,step=0.1,
+               min = 0, max = 1),
+	numericInput('tr.efficacy.high', 
+		           'Upper limit', 
+		            value=0.89,step=0.1,
+                min = 0, max = 1)),
+# Adherence         
+tags$hr(tags$h4("Treatment adherence"),
 numericInput('adh.mean', 
 		           'Mean', 
 		           value=0.735, step=0.1,
@@ -193,6 +180,8 @@ numericInput('adh.mean',
            assumed to have the same probabilities of 
           transmission as if untreated, while incurring 
           the full cost of treatment."))
+
+)
 		     )),
 		
 		
@@ -330,63 +319,57 @@ reactive({
             input$p2.prob.high, 
             input$p2) 
   
-  s1.p3.prob <- rtriangle(n.sims, 
-            input$s1.p3.prob.low,
-            input$s1.p3.prob.high, 
-            input$s1.p3) 
-  s1.p4.prob <- rtriangle(n.sims, 
-            input$s1.p4.prob.low,
-            input$s1.p4.prob.high, 
-            input$s1.p4) 
-  s2.p3.prob <- rtriangle(n.sims, 
-                          input$s2.p3.prob.low,
-                          input$s2.p3.prob.high,
-                          input$s2.p3)
+  p3.prob <- rtriangle(n.sims, 
+            input$p3.prob.low,
+            input$p3.prob.high, 
+            input$p3) 
+  p4.prob <- rtriangle(n.sims, 
+            input$p4.prob.low,
+            input$p4.prob.high, 
+            input$p4) 
+  
+
+  tr.efficacy.prob<-rtriangle(n.sims, 
+                          input$tr.efficacy.low,
+                          input$tr.efficacy.high,
+                          input$tr.efficacy.mean)
   adh.prob<-rtriangle(n.sims, 
                           input$adh.low,
                           input$adh.high,
                           input$adh.mean)
                           
+                          
   
   # list of probabilities
-  # deterministic and probabilistic
   list(
-       ## deterministic
-       #common probs
+       # no treatment
        p1=input$p1,
        p2=input$p2,
-       #s1 probs
-       s1.p3=input$s1.p3,
-       s1.p4=input$s1.p4,
-       # s2 probs
-       #s2.p3=input$s2.p3,   
-       s2.p3=(input$s2.p3*input$adh.mean)+
-         ((1-input$adh.mean)*input$s1.p3),   # with adherence
-      # s2.p4=input$s2.p3,
-       s2.p4=(input$s2.p3*input$adh.mean)+
-         ((1-input$adh.mean)*input$s1.p4), # with adherence
-       # s3 probs
-      # s3.p3= input$s2.p3,# same as prob s2.p3
-       s3.p3=(input$s2.p3*input$adh.mean)+
-         ((1-input$adh.mean)*input$s1.p3),   # with adherence
-      s3.p4= input$s1.p4,# same as prob s1.p4
-       ## probabilistic
-       #common probs
+       p3=input$p3,
+       p4=input$p4,
        p1.prob=p1.prob,
        p2.prob=p2.prob,
-       #s1 probs
-       s1.p3.prob=s1.p3.prob,
-       s1.p4.prob=s1.p4.prob,
-       # s2 probs
-      # s2.p3.prob=s2.p3.prob,
-      s2.p3.prob=(s2.p3.prob*input$adh.mean)+
-         ((1-input$adh.mean)*s1.p3.prob),   # with adherence
-      # s2.p4.prob=s2.p3.prob, # same as prob s2.p3
-      s2.p4.prob=(s2.p3.prob*input$adh.mean)+
-          ((1-input$adh.mean)*s1.p4.prob),   # with adherence  
-       # s3 probs
-       s3.p3.prob= s2.p3.prob,# same as prob s2.p3
-       s3.p4.prob= s1.p4.prob # same as prob s1.p4
+       p3.prob=p3.prob,
+       p4.prob=p4.prob,
+       # treatment
+       # accounting for both 
+       # 1) efficacy, and
+       # 2) adherence
+       p3.tr=
+         (input$p3*(1-input$tr.efficacy.mean))*input$adh.mean+
+         (input$p3*(1-input$adh.mean)),
+       p4.tr=
+         (input$p4*(1-input$tr.efficacy.mean))*input$adh.mean+
+         (input$p4*(1-input$adh.mean)),
+  
+       p3.tr.prob=
+         (p3.prob*(1-tr.efficacy.prob))*adh.prob+
+         (p3.prob*(1-adh.prob)),
+       
+       p4.tr.prob=
+         (p4.prob*(1-tr.efficacy.prob))*adh.prob+
+         (p4.prob*(1-adh.prob))
+
        )
 })
 
@@ -397,74 +380,71 @@ reactive({
   
   list(
     #strategy 1
-  #  deterministic
   s1.O1=input$cohort.n*
-            a$p1*a$p2*a$s1.p3,
+            a$p1*a$p2*a$p3,
        s1.O2= input$cohort.n*
-              a$p1*a$p2* (1-a$s1.p3),
+              a$p1*a$p2* (1-a$p3),
        s1.O3= input$cohort.n*
-            a$p1*(1-a$p2)*a$s1.p4,
+            a$p1*(1-a$p2)*a$p4,
        s1.O4= input$cohort.n*
-            a$p1*(1-a$p2)* (1-a$s1.p4),
+            a$p1*(1-a$p2)* (1-a$p4),
        s1.O5= input$cohort.n*
             (1-a$p1),
        s1.O1.prob=input$cohort.n*
-            a$p1.prob*a$p2.prob*a$s1.p3.prob,
+            a$p1.prob*a$p2.prob*a$p3.prob,
        s1.O2.prob= input$cohort.n*
-              a$p1.prob*a$p2.prob* (1-a$s1.p3.prob),
+              a$p1.prob*a$p2.prob* (1-a$p3.prob),
        s1.O3.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)*a$s1.p4.prob,
+            a$p1*(1-a$p2.prob)*a$p4.prob,
        s1.O4.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)* (1-a$s1.p4.prob),
+            a$p1*(1-a$p2.prob)* (1-a$p4.prob),
        s1.O5.prob= input$cohort.n*
             (1-a$p1.prob),
   
   #strategy 2
-  #  deterministic
   s2.O1=input$cohort.n*
-            a$p1*a$p2*a$s2.p3,
+            a$p1*a$p2*a$p3.tr,
        s2.O2= input$cohort.n*
-              a$p1*a$p2* (1-a$s2.p3),
+              a$p1*a$p2* (1-a$p3.tr),
        s2.O3= input$cohort.n*
-            a$p1*(1-a$p2)*a$s2.p4,
+            a$p1*(1-a$p2)*a$p4.tr,
        s2.O4= input$cohort.n*
-            a$p1*(1-a$p2)* (1-a$s2.p4),
+            a$p1*(1-a$p2)* (1-a$p4.tr),
        s2.O5= input$cohort.n*
             (1-a$p1),
        s2.O1.prob=input$cohort.n*
-            a$p1.prob*a$p2.prob*a$s2.p3.prob,
+            a$p1.prob*a$p2.prob*a$p3.tr.prob,
        s2.O2.prob= input$cohort.n*
-              a$p1.prob*a$p2.prob* (1-a$s2.p3.prob),
+              a$p1.prob*a$p2.prob* (1-a$p3.tr.prob),
        s2.O3.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)*a$s2.p4.prob,
+            a$p1*(1-a$p2.prob)*a$p4.tr.prob,
        s2.O4.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)* (1-a$s2.p4.prob),
+            a$p1*(1-a$p2.prob)* (1-a$p4.tr.prob),
        s2.O5.prob= input$cohort.n*
             (1-a$p1.prob),
 
   #strategy 3
-  #  deterministic
-  s3.O1=input$cohort.n*
-            a$p1*a$p2*a$s3.p3,
+      s3.O1=input$cohort.n*
+            a$p1*a$p2*a$p3.tr,
        s3.O2= input$cohort.n*
-              a$p1*a$p2* (1-a$s3.p3),
+              a$p1*a$p2* (1-a$p3.tr),
        s3.O3= input$cohort.n*
-            a$p1*(1-a$p2)*a$s3.p4,
+            a$p1*(1-a$p2)*a$p4,
        s3.O4= input$cohort.n*
-            a$p1*(1-a$p2)* (1-a$s3.p4),
+            a$p1*(1-a$p2)* (1-a$p4),
        s3.O5= input$cohort.n*
             (1-a$p1),
        s3.O1.prob=input$cohort.n*
-            a$p1.prob*a$p2.prob*a$s3.p3.prob,
+            a$p1.prob*a$p2.prob*a$p3.tr.prob,
        s3.O2.prob= input$cohort.n*
-              a$p1.prob*a$p2.prob* (1-a$s3.p3.prob),
+              a$p1.prob*a$p2.prob* (1-a$p3.tr.prob),
        s3.O3.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)*a$s3.p4.prob,
+            a$p1*(1-a$p2.prob)*a$p4.prob,
        s3.O4.prob= input$cohort.n*
-            a$p1*(1-a$p2.prob)* (1-a$s3.p4.prob),
+            a$p1*(1-a$p2.prob)* (1-a$p4.prob),
        s3.O5.prob= input$cohort.n*
             (1-a$p1.prob))
-})
+ })
 
 
 
