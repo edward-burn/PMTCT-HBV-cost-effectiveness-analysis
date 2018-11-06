@@ -146,6 +146,13 @@ tabPanel("Current practice",
 		            value=0.142,step=0.1,
                 min = 0, max = 1))#,
 	 ),
+# test sensitivity -----
+tabPanel("HBsAg test sensitivity",
+      tags$hr(tags$h4("Test sensitivity"),
+numericInput('test.sensitivity', 
+		           'Mean', 
+		           value=1, step=0.1,
+               min = 0, max = 1))),   
 # treatment ----
 tabPanel("Treatment effectiveness",
 # efficacy
@@ -179,7 +186,17 @@ numericInput('adh.mean',
   tags$h5("Mothers that don't adhere to treatment are
            assumed to have the same probabilities of 
           transmission as if untreated, while incurring 
+          the full cost of treatment.")),
+tags$hr(tags$h4("Treatment resistance"),
+numericInput('res.mean', 
+		           'Mean', 
+		           value=0.008, step=0.1,
+               min = 0, max = 1),
+  tags$h5("Mothers that are resistant to treatment are
+           assumed to have the same probabilities of 
+          transmission as if untreated, while incurring 
           the full cost of treatment."))
+
 
 )
 		     )),
@@ -309,6 +326,14 @@ output$picture<-renderText({c('<img src="',src,'">')})
 probs<-
 reactive({
   
+  # probabilities without treatment
+  #deterministic
+  p1<-input$p1
+  p2<-input$p2
+  p3<-input$p3
+  p4<-input$p4
+  
+  # probabilistic
   n.sims<-1000
   p1.prob <- rtriangle(n.sims, 
             input$p1.prob.low,
@@ -329,47 +354,76 @@ reactive({
             input$p4) 
   
 
-  tr.efficacy.prob<-rtriangle(n.sims, 
+ # probabilities with treatment
+ tr.efficacy<-input$tr.efficacy.mean
+ tr.efficacy.prob<-rtriangle(n.sims, 
                           input$tr.efficacy.low,
                           input$tr.efficacy.high,
                           input$tr.efficacy.mean)
-  adh.prob<-rtriangle(n.sims, 
+    
+ p3.tr<-input$p3*(1-tr.efficacy)
+ p4.tr<-input$p4*(1-tr.efficacy)
+ p3.tr.prob<-p3.prob*(1-tr.efficacy.prob)
+ p4.tr.prob<-p4.prob*(1-tr.efficacy.prob)
+  
+ # account for adherence
+ adh<-input$adh.mean
+ adh.prob<-rtriangle(n.sims,
                           input$adh.low,
                           input$adh.high,
                           input$adh.mean)
-                          
-                          
+ p3.tr<-(p3.tr*adh)+
+        (p3*(1-adh))
+ p4.tr<-(p4.tr*adh)+
+        (p4*(1-adh))
+ p3.tr.prob<-(p3.tr.prob*adh.prob)+
+        (p3.prob*(1-adh.prob))
+ p4.tr.prob<-(p4.tr.prob*adh.prob)+
+        (p4.prob*(1-adh.prob))
+ 
+ # account for resistance
+ # nb determistic estimate only
+ res<-input$res.mean
+ p3.tr<-(p3.tr*(1-res))+
+        (p3*res)
+ p4.tr<-(p4.tr*(1-res))+
+        (p4*res)
+ p3.tr.prob<-(p3.tr.prob*(1-res))+
+        (p3.prob*res)
+ p4.tr.prob<-(p4.tr.prob*(1-res))+
+        (p4.prob*res)
+
+ 
+ # account for HBsAg test sensitivity
+# nb determistic estimate only
+ test.sensitivity<-input$test.sensitivity
+ p3.tr<-(p3.tr*test.sensitivity)+
+        (p3*(1-test.sensitivity))
+ p4.tr<-(p4.tr*test.sensitivity)+
+        (p4*(1-test.sensitivity))
+ p3.tr.prob<-(p3.tr.prob*test.sensitivity)+
+        (p3.prob*(1-test.sensitivity))
+ p4.tr.prob<-(p4.tr.prob*test.sensitivity)+
+        (p4.prob*(1-test.sensitivity))
+ 
+ 
   
   # list of probabilities
   list(
        # no treatment
-       p1=input$p1,
-       p2=input$p2,
-       p3=input$p3,
-       p4=input$p4,
+       p1=p1,
+       p2=p2,
+       p3=p3,
+       p4=p4,
        p1.prob=p1.prob,
        p2.prob=p2.prob,
        p3.prob=p3.prob,
        p4.prob=p4.prob,
-       # treatment
-       # accounting for both 
-       # 1) efficacy, and
-       # 2) adherence
-       p3.tr=
-         (input$p3*(1-input$tr.efficacy.mean))*input$adh.mean+
-         (input$p3*(1-input$adh.mean)),
-       p4.tr=
-         (input$p4*(1-input$tr.efficacy.mean))*input$adh.mean+
-         (input$p4*(1-input$adh.mean)),
-  
-       p3.tr.prob=
-         (p3.prob*(1-tr.efficacy.prob))*adh.prob+
-         (p3.prob*(1-adh.prob)),
-       
-       p4.tr.prob=
-         (p4.prob*(1-tr.efficacy.prob))*adh.prob+
-         (p4.prob*(1-adh.prob))
-
+       # with treatment
+       p3.tr=p3.tr,
+       p4.tr=p4.tr,
+       p3.tr.prob=p3.tr.prob,
+       p4.tr.prob=p4.tr.prob
        )
 })
 
@@ -457,6 +511,15 @@ a<-tranistions()
 test.cost.hbsag<-input$test.cost.hbsag
 test.cost.hbeag<-input$test.cost.hbeag
 treatment.cost<-input$treatment.cost
+
+# account for test sensitivity
+# if not 100% sensitive, those 
+# misindentified will have no cost 
+# for hbeag test and treatment
+test.cost.hbeag<-test.cost.hbeag*input$test.sensitivity
+treatment.cost<-treatment.cost*input$test.sensitivity
+
+
 
 
 
