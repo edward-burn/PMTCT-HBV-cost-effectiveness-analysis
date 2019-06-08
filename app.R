@@ -16,8 +16,7 @@ ui <-  fluidPage(theme = shinytheme("spacelab"),
 
 # title ------ 
  # shown across tabs
-titlePanel("Prevention of mother to child transmission (PMTCT) of Hepatitis B virus (HBV) in South Africa: 
-             a cost-effectiveness analysis"),
+titlePanel("Modelling cost-effectiveness of tenofovir for prevention of mother to child transmission of hepatitis B virus (HBV) infection in South Africa"),
 
 # Pages along the side -----  
 navlistPanel(
@@ -29,19 +28,17 @@ tabPanel("Introduction",
 tabPanel("Background",
 	  mainPanel(
 	      tags$h3("Introduction"),
-	    	tags$h4("This RShiny app presents an
-	    	        decision-analytic model for
-                assessing the cost-effectiveness 
-	    	        of three possible 
-                HBV PMTCT approaches 
-	    	        in pregnancy"),
-	    	tags$h4("The app is based on the following paper:"),
-	    	tags$h4(tags$strong("Cost-effectiveness of alternative strategies for prevention of
-                 mother to child transmission of HBV in South Africa"),
-	    	        "Jolynne Mokaya, Edward Burn, Cynthia Raissa Tamandjou, Dominique Goedhals,
-                 Monique Andersson, Rafael Pinedo-Villanueva, 
-	    	        Philippa C Matthews. (Currently at submission stage)")
-	    	
+# 	    	tags$h4("This RShiny app presents an
+# 	    	        decision-analytic model for
+#                 assessing the cost-effectiveness 
+# 	    	        of three possible 
+#                 HBV PMTCT approaches 
+# 	    	        in pregnancy"),
+	    	tags$h4("The app presents the model used for the following paper:"),
+	    	tags$h4(tags$strong("Modelling cost-effectiveness of tenofovir for prevention of mother to child transmission of 
+	    	                    hepatitis B virus (HBV) infection in South Africa"),
+	    	        "Jolynne Mokaya, Edward Burn, Cynthia Raissa Tamandjou, 
+	    	        Dominique Goedhals, Eleanor Barnes, Monique Andersson, Rafael Pinedo-Villanueva, Philippa C Matthews. BMC Public Health (In press)")
 	                 )
 	                 ),
 # strategies tab ------  	
@@ -190,7 +187,7 @@ numericInput('adh.mean',
 tags$hr(tags$h4("Treatment resistance"),
 numericInput('res.mean', 
 		           'Mean', 
-		           value=0.008, step=0.1,
+		           value=0.000, step=0.1,
                min = 0, max = 1),
   tags$h5("Mothers that are resistant to treatment are
            assumed to have the same probabilities of 
@@ -690,23 +687,24 @@ row.names(infections)<-c(1:3)
 infections$strategy<-as.character(infections$strategy)
 
 infections.conf<-
-  data.frame(s1.infections.conf= paste0(sprintf("%.2f",b$s1.infections),
+  data.frame(s1.infections.conf=
+               paste0(sprintf("%.0f",b$s1.infections),
                               " (",
-                              sprintf("%.2f",b$s1.infections.low),
+                              sprintf("%.0f",b$s1.infections.low),
                               " to ",
-                              sprintf("%.2f",b$s1.infections.high),
+                              sprintf("%.0f",b$s1.infections.high),
                               ")"),
-         s2.infections.conf= paste0(sprintf("%.2f",b$s2.infections),
+         s2.infections.conf= paste0(sprintf("%.0f",b$s2.infections),
                               " (",
-                              sprintf("%.2f",b$s2.infections.low),
+                              sprintf("%.0f",b$s2.infections.low),
                               " to ",
-                              sprintf("%.2f",b$s2.infections.high),
+                              sprintf("%.0f",b$s2.infections.high),
                               ")"),
-         s3.infections.conf= paste0(sprintf("%.2f",b$s3.infections),
+         s3.infections.conf= paste0(sprintf("%.0f",b$s3.infections),
                               " (",
-                              sprintf("%.2f",b$s3.infections.low),
+                              sprintf("%.0f",b$s3.infections.low),
                               " to ",
-                              sprintf("%.2f",b$s3.infections.high),
+                              sprintf("%.0f",b$s3.infections.high),
                               ")")) 
 infections.conf<-data.frame(infections.conf=t(infections.conf))
 infections.conf<-cbind(strategy=c("S1", "S2", "S3"),
@@ -736,17 +734,17 @@ cost$strategy<-as.character(cost$strategy)
 
 cost.conf<-
   data.frame(s1.cost.conf= 0,
-         s2.cost.conf= paste0(sprintf("%.2f",a$s2.total.cost),
+         s2.cost.conf= paste0(sprintf("%.0f",a$s2.total.cost),
                               " (",
-                              sprintf("%.2f",a$s2.total.cost.low),
+                              sprintf("%.0f",a$s2.total.cost.low),
                               " to ",
-                              sprintf("%.2f",a$s2.total.cost.high),
+                              sprintf("%.0f",a$s2.total.cost.high),
                               ")"),
-         s3.cost.conf= paste0(sprintf("%.2f",a$s3.total.cost),
+         s3.cost.conf= paste0(sprintf("%.0f",a$s3.total.cost),
                               " (",
-                              sprintf("%.2f",a$s3.total.cost.low),
+                              sprintf("%.0f",a$s3.total.cost.low),
                               " to ",
-                              sprintf("%.2f",a$s3.total.cost.high),
+                              sprintf("%.0f",a$s3.total.cost.high),
                               ")")) 
 cost.conf<-data.frame(cost.conf=t(cost.conf))
 cost.conf<-cbind(strategy=c("S1", "S2", "S3"),
@@ -789,7 +787,7 @@ if(summary.table$cost[2]>
   summary.table$ICER[3]<-sprintf("%.f",
                         summary.table$cost[3]/
         (summary.table$infections[1]-
-           summary.table$infections[3]))
+                 summary.table$infections[3]))
 
 summary.table$ICER[3]<-paste0(summary.table$ICER[3],
                              " (compared to strategy ",
@@ -814,9 +812,9 @@ summary.table$ICER[2]<-paste0("Extendedly dominated (by strategy ",
                              summary.table$strategy[3],
                              ")")
   summary.table$ICER[3]<-sprintf("%.2f",
-                        summary.table$cost[3]/
-        (summary.table$infections[1]-
-           summary.table$infections[3]))
+                                 round(summary.table$cost[3])/
+        (round(summary.table$infections[1])-
+           round(summary.table$infections[3])))
 
 summary.table$ICER[3]<-paste0(summary.table$ICER[3],
                              " (compared to strategy ",
@@ -841,13 +839,13 @@ if(
   ) {
 
 summary.table$ICER[2]<-sprintf("%.2f",
-                        summary.table$cost[2]/
+                               summary.table$cost[2]/
         (summary.table$infections[1]-
            summary.table$infections[2]))
   summary.table$ICER[3]<-sprintf("%.2f",
-                        summary.table$cost[3]/
+                                 round(summary.table$cost[3])/
         (summary.table$infections[2]-
-           summary.table$infections[3]))
+          summary.table$infections[3]))
 
 summary.table$ICER[2]<-paste0(summary.table$ICER[2],
                              " (compared to strategy ",
@@ -863,9 +861,9 @@ summary.table$ICER[3]<-paste0(summary.table$ICER[3],
 
 summary.table<-summary.table %>%
   mutate(Strategy=strategy,
-         Infections=paste(sprintf("%.2f",infections),
+         Infections=paste(sprintf("%.0f",infections),
                           infections.conf),
-         Cost=paste(sprintf("%.2f",cost),
+         Cost=paste(sprintf("%.0f",cost),
                     cost.conf)) %>%
   select(Strategy,
          Infections,
